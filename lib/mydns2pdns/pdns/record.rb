@@ -2,7 +2,7 @@ require 'sequel'
 
 module PDNS
   class Record < Sequel::Model
-    self.db = PDNSDb
+    self.db = Mydns2PDNS::Databases.pdns
 
     def can_be_replaced_with?(record)
       case record.type
@@ -23,6 +23,10 @@ module PDNS
       self.content = record.data
       self.ttl = record.ttl
       self.prio = record.aux
+    end
+
+    def type
+      self[:type]
     end
   end
 end

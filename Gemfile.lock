@@ -3,6 +3,7 @@ GEM
   specs:
     mysql2 (0.3.11)
     sequel (3.42.0)
+    trollop (1.16.2)
 
 PLATFORMS
   ruby
@@ -10,3 +11,4 @@ PLATFORMS
 DEPENDENCIES
   mysql2
   sequel
+  trollop

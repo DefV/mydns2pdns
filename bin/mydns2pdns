@@ -1,5 +1,12 @@
 #!/usr/bin/env ruby
 
+$LOAD_PATH << File.join(File.dirname(__FILE__), '../lib')
 require 'mydns2pdns'
+require 'trollop'
 
-Mydns2PDNS.new.convert!
+opts = Trollop.options do
+  opt :verbose, "Be verbose", :short => 'v'
+  opt :config,  "Location of the config file", :default => "#{ENV['HOME']}/.mydns2pdnsrc", :short => 'c'
+end
+
+Mydns2PDNS.new(opts).convert!

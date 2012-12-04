@@ -1,13 +1,20 @@
 require 'rubygems'
 require 'bundler/setup'
 
+require 'mydns2pdns/config'
 require 'mydns2pdns/databases'
-require 'mydns2pdns/pdns'
-require 'mydns2pdns/mydns'
 
 class Mydns2PDNS
+  attr_accessor :options
+
+  def initialize(options = {})
+    self.options = options
+  end
+
   def convert!
-    seen = mydns_domains.map do |domain|
+    Mydns2PDNS::Databases.load(config)
+
+   seen = mydns_domains.map do |domain|
       pdns_domain = PDNS::Domain.find_or_create(:name => domain.name, :type => 'NATIVE')
 
       pdns_domain.import_zone(domain)
@@ -25,5 +32,9 @@ class Mydns2PDNS
 
   def pdns_domains
     PDNS::Domain.all
+  end
+
+  def config
+    @config ||= Mydns2PDNS::Config.new(options[:config])
   end
 end
