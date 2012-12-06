@@ -20,12 +20,11 @@ module PDNS
       seen << update_or_create_soa_for(domain)
 
       (records(true) - seen).each do |record|
-        puts "#{record.id} - Destroying #{record.type} - #{record.name} - #{record.content}"
         record.destroy
       end
 
       # Validate record sizes
-      unless records.count == domain.records.count + 1
+      unless records(true).count == domain.records(true).count + 1
         puts "Something is wrong with #{name} - Record size don't add up - PDNS: #{records.count} MyDNS: #{domain.records.count + 1}"
       end
     end

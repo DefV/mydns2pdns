@@ -1,10 +1,19 @@
 require 'rubygems'
+require 'logger'
 require 'bundler/setup'
 
 require 'mydns2pdns/config'
 require 'mydns2pdns/databases'
 
 class Mydns2PDNS
+  class << self
+    def log(message)
+      if $VERBOSE_LOGGING
+        @logger ||= Logger.new(STDOUT)
+        @logger.info message
+      end
+    end
+  end
   attr_accessor :options
 
   def initialize(options = {})

@@ -9,4 +9,6 @@ opts = Trollop.options do
   opt :config,  "Location of the config file", :default => "#{ENV['HOME']}/.mydns2pdnsrc", :short => 'c'
 end
 
+$VERBOSE_LOGGING = opts[:verbose]
+
 Mydns2PDNS.new(opts).convert!

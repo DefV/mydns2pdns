@@ -28,5 +28,17 @@ module PDNS
     def type
       self[:type]
     end
+
+    def after_create
+      Mydns2PDNS.log "ADD: #{type} #{name} => #{content}"
+    end
+
+    def after_update
+      Mydns2PDNS.log "UPD: #{type} #{name} => #{content}" if changed_columns.any?
+    end
+
+    def after_destroy
+      Mydns2PDNS.log "REM: #{type} #{name} => #{content}"
+    end
   end
 end
