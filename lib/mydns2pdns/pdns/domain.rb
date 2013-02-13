@@ -7,20 +7,21 @@ module PDNS
     one_to_many :records
 
     def import_zone(domain)
-      seen = domain.records.inject([]) do |seen, record|
-        pdns_record = records.find {|r| r.can_be_replaced_with?(record) }
-        pdns_record = PDNS::Record.new unless pdns_record
-        pdns_record.import_mydns_record record
-        pdns_record.save
-        add_record pdns_record
+      self.db.transaction do
+        seen = domain.records.inject([]) do |seen, record|
+          pdns_record = records.find {|r| r.can_be_replaced_with?(record) }
+          pdns_record = PDNS::Record.new unless pdns_record
+          pdns_record.import_mydns_record record
+          add_record pdns_record unless records.member?(pdns_record)
 
-        seen << pdns_record
-      end
+          seen << pdns_record
+        end
 
-      seen << update_or_create_soa_for(domain)
+        seen << update_or_create_soa_for(domain)
 
-      (records(true) - seen).each do |record|
-        record.destroy
+        (records(true) - seen).each do |record|
+          record.destroy
+        end
       end
 
       # Validate record sizes
@@ -34,7 +35,7 @@ module PDNS
       record.name = domain.name
       record.content = "#{domain.ns} #{domain.mbox} #{domain.serial} #{domain.refresh} #{domain.retry} #{domain.expire} #{domain.minimum}"
       record.ttl  = domain.ttl
-      record.save
+      record.save if record.changed_columns.any?
 
       record
     end

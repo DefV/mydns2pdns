@@ -4,6 +4,8 @@ module PDNS
   class Record < Sequel::Model
     self.db = Mydns2PDNS::Databases.pdns
 
+    plugin :dirty
+
     def can_be_replaced_with?(record)
       case record.type
       when 'TXT', 'CNAME'
