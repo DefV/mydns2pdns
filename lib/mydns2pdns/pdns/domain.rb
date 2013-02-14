@@ -33,7 +33,7 @@ module PDNS
     def update_or_create_soa_for(domain)
       record = PDNS::Record.find_or_create(:type => 'SOA', :domain_id => id)
       record.name = domain.name
-      record.content = "#{domain.ns} #{domain.mbox} #{domain.serial} #{domain.refresh} #{domain.retry} #{domain.expire} #{domain.minimum}"
+      record.content = "#{domain.ns} #{domain.mbox} #{domain.serial} #{domain[:refresh]} #{domain.retry} #{domain.expire} #{domain.minimum}"
       record.ttl  = domain.ttl
       record.save if record.changed_columns.any?
 
