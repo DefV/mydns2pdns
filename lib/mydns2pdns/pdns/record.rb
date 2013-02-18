@@ -8,7 +8,7 @@ module PDNS
 
     def can_be_replaced_with?(record)
       case record.type
-      when 'TXT', 'CNAME'
+      when 'TXT', 'CNAME', 'SRV'
         type == record.type && name == record.fullname
       when 'A', 'AAAA'
         type == record.type && content == record.data && name == record.fullname
